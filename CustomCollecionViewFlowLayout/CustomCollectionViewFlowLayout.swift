@@ -27,13 +27,11 @@ open class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
             
             for section in (0..<collectionView.numberOfSections) {
                 var cells = [CGRect]()
-                let numberOfCellsInSection = collectionView.numberOfItems(inSection: section);
+                let numberOfCellsInSection = collectionView.numberOfItems(inSection: section)
                 var height = contentSize.height
                 
                 for i in (0..<numberOfCellsInSection) {
-                    let position = i  % (numberOfCellsInSection)
-                    let cellPosition = position % cellPattern.count
-                    let cell = cellPattern[cellPosition]
+                    let cell = cellPattern[i]
                     let x = (cell.column * (smallCellSideLength + super.minimumInteritemSpacing)) + super.sectionInset.left
                     let y = (cell.row * (smallCellSideLength + super.minimumLineSpacing)) + contentSize.height + super.sectionInset.top
                     let cellwidth = (cell.sideLength * smallCellSideLength) + ((cell.sideLength-1) * super.minimumInteritemSpacing)
