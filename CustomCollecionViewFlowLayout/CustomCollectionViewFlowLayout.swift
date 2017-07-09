@@ -8,26 +8,26 @@
 
 import UIKit
 
-public class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
-    private static let kMaxRow = 3
+open class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    fileprivate static let kMaxRow = 3
     
     var maxColumn = kMaxRow
     var cellPattern:[(sideLength: CGFloat, heightLength:CGFloat, column:CGFloat, row:CGFloat)] = []
     
-    private var sectionCells = [[CGRect]]()
-    private var contentSize = CGSizeZero
+    fileprivate var sectionCells = [[CGRect]]()
+    fileprivate var contentSize = CGSize.zero
     
-    override public func prepareLayout() {
-        super.prepareLayout()
+    override open func prepare() {
+        super.prepare()
         sectionCells = [[CGRect]]()
         
         if let collectionView = self.collectionView {
             contentSize = CGSize(width: collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right, height: 0)
             let smallCellSideLength: CGFloat = (contentSize.width - super.sectionInset.left - super.sectionInset.right - (super.minimumInteritemSpacing * (CGFloat(maxColumn) - 1.0))) / CGFloat(maxColumn)
             
-            for section in (0..<collectionView.numberOfSections()) {
+            for section in (0..<collectionView.numberOfSections) {
                 var cells = [CGRect]()
-                var numberOfCellsInSection = collectionView.numberOfItemsInSection(section);
+                let numberOfCellsInSection = collectionView.numberOfItems(inSection: section);
                 var height = contentSize.height
                 
                 for i in (0..<numberOfCellsInSection) {
@@ -39,7 +39,7 @@ public class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
                     let cellwidth = (cell.sideLength * smallCellSideLength) + ((cell.sideLength-1) * super.minimumInteritemSpacing)
                     let cellheight = (cell.heightLength * smallCellSideLength) + ((cell.heightLength-1) * super.minimumLineSpacing)
                     
-                    let cellRect = CGRectMake(x, y, cellwidth, cellheight)
+                    let cellRect = CGRect(x: x, y: y, width: cellwidth, height: cellheight)
                     cells.append(cellRect)
                     
                     if (height < cellRect.origin.y + cellRect.height) {
@@ -52,18 +52,19 @@ public class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-    override public func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
+    override open func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        super.layoutAttributesForElements(in: rect)
         var layoutAttributes = [UICollectionViewLayoutAttributes]()
         
         if let collectionView = self.collectionView {
-            for (var i = 0 ;i<collectionView.numberOfSections(); i++) {
-                var sectionIndexPath = NSIndexPath(forItem: 0, inSection: i)
+            for  i in 0  ..< collectionView.numberOfSections {
+                //var sectionIndexPath = IndexPath(item: 0, section: i)
                 
-                var numberOfCellsInSection = collectionView.numberOfItemsInSection(i);
-                for (var j = 0; j<numberOfCellsInSection; j++) {
-                    let indexPath = NSIndexPath(forRow:j, inSection:i)
-                    if let attributes = layoutAttributesForItemAtIndexPath(indexPath) {
-                        if (CGRectIntersectsRect(rect, attributes.frame)) {
+                let numberOfCellsInSection = collectionView.numberOfItems(inSection: i);
+                for j in 0 ..< numberOfCellsInSection {
+                    let indexPath = IndexPath(row:j, section:i)
+                    if let attributes = layoutAttributesForItem(at: indexPath) {
+                        if (rect.intersects(attributes.frame)) {
                             layoutAttributes.append(attributes)
                         }
                     }
@@ -73,13 +74,13 @@ public class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
         return layoutAttributes
     }
     
-    override public func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
-        var attributes = super.layoutAttributesForItemAtIndexPath(indexPath)
-        attributes.frame = sectionCells[indexPath.section][indexPath.row]
+    override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        let attributes = super.layoutAttributesForItem(at: indexPath)
+        attributes?.frame = sectionCells[indexPath.section][indexPath.row]
         return attributes
     }
     
-    override public func collectionViewContentSize() -> CGSize {
+    override open var collectionViewContentSize : CGSize {
         return contentSize
     }
 }

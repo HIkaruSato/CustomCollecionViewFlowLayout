@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UICollectionViewController{
 
-    private let cellIdentifier = "cell"
+    fileprivate let cellIdentifier = "cell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,18 +20,18 @@ class ViewController: UICollectionViewController{
             layout.minimumInteritemSpacing = 8
             
             layout.maxColumn = 3
-            layout.cellPattern.append(sideLength: 2,heightLength: 2,column: 0,row: 0)
-            layout.cellPattern.append(sideLength: 1,heightLength: 1,column: 2,row: 0)
-            layout.cellPattern.append(sideLength: 1,heightLength: 2,column: 2,row: 1)
-            layout.cellPattern.append(sideLength: 1,heightLength: 2,column: 0,row: 2)
-            layout.cellPattern.append(sideLength: 1,heightLength: 1,column: 1,row: 2)
-            layout.cellPattern.append(sideLength: 2,heightLength: 1,column: 1,row: 3)
+            layout.cellPattern.append((sideLength: 2,heightLength: 2,column: 0,row: 0))
+            layout.cellPattern.append((sideLength: 1,heightLength: 1,column: 2,row: 0))
+            layout.cellPattern.append((sideLength: 1,heightLength: 2,column: 2,row: 1))
+            layout.cellPattern.append((sideLength: 1,heightLength: 2,column: 0,row: 2))
+            layout.cellPattern.append((sideLength: 1,heightLength: 1,column: 1,row: 2))
+            layout.cellPattern.append((sideLength: 2,heightLength: 1,column: 1,row: 3))
         }
         
-        collectionView?.registerClass(UICollectionViewCell.classForCoder(), forCellWithReuseIdentifier: cellIdentifier)
+        collectionView?.register(UICollectionViewCell.classForCoder(), forCellWithReuseIdentifier: cellIdentifier)
     }
 
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
@@ -39,22 +39,22 @@ class ViewController: UICollectionViewController{
         super.didReceiveMemoryWarning()
     }
 
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 6
     }
     
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        var cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as! UICollectionViewCell
-        var mainLabel = UILabel(frame: cell.frame)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) 
+        let mainLabel = UILabel(frame: cell.frame)
         
         mainLabel.text = "\(indexPath.section)-\(indexPath.item)"
-        mainLabel.textAlignment = .Center
-        mainLabel.backgroundColor = UIColor.blueColor()
+        mainLabel.textAlignment = .center
+        mainLabel.backgroundColor = UIColor.blue
         cell.backgroundView = mainLabel
         cell.clipsToBounds = true
         cell.addSubview(mainLabel)
